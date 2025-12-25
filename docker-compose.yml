@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  # 새해 카운트다운 웹 애플리케이션
+  newyear-countdown:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: newyear-countdown
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+    networks:
+      - countdown-network
+    environment:
+      - TZ=Asia/Seoul
+    labels:
+      - "com.newyear.description=New Year Countdown Web Application"
+      - "com.newyear.version=1.0"
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+networks:
+  countdown-network:
+    driver: bridge
+    name: countdown-net

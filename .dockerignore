@@ -1,0 +1,23 @@
+# Docker 관련 파일
+.dockerignore
+
+# 로그 파일
+*.log
+
+# OS 관련 파일
+.DS_Store
+Thumbs.db
+
+# IDE 설정
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# 임시 파일
+*~
+.tmp/
+
+# Git
+.git/
+.gitignore
