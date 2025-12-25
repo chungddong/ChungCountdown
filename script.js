@@ -2,8 +2,26 @@
 (function() {
     'use strict';
 
-    // 목표 날짜 설정 (2026년 1월 1일 00:00:00)
-    const targetDate = new Date('2026-01-01T00:00:00').getTime();
+    /**
+     * 다음 해 1월 1일 계산
+     */
+    function getNextNewYear() {
+        const now = new Date();
+        const currentYear = now.getFullYear();
+        const nextYear = currentYear + 1;
+        return new Date(`${nextYear}-01-01T00:00:00`).getTime();
+    }
+
+    /**
+     * 현재가 1월 1일인지 확인
+     */
+    function isNewYearDay() {
+        const now = new Date();
+        return now.getMonth() === 0 && now.getDate() === 1;
+    }
+
+    // 목표 날짜 설정 (다음 해 1월 1일 00:00:00)
+    let targetDate = getNextNewYear();
     
     // DOM 요소
     const daysEl = document.getElementById('days');
@@ -11,12 +29,6 @@
     const minutesEl = document.getElementById('minutes');
     const secondsEl = document.getElementById('seconds');
     const messageEl = document.getElementById('message');
-    const progressEl = document.getElementById('progress');
-    const progressTextEl = document.getElementById('progress-text');
-
-    // 시작 날짜 (2025년 1월 1일)
-    const startDate = new Date('2025-01-01T00:00:00').getTime();
-    const totalDuration = targetDate - startDate;
 
     /**
      * 숫자를 두 자리로 포맷팅
@@ -29,10 +41,16 @@
      * 카운트다운 업데이트
      */
     function updateCountdown() {
+        // 1월 1일이면 축하 메시지 표시
+        if (isNewYearDay()) {
+            showCelebration();
+            return;
+        }
+
         const now = new Date().getTime();
         const timeLeft = targetDate - now;
 
-        // 카운트다운 종료 체크
+        // 카운트다운 종료 체크 (새해가 됨)
         if (timeLeft <= 0) {
             showCelebration();
             return;
@@ -49,12 +67,6 @@
         updateElement(hoursEl, formatNumber(hours));
         updateElement(minutesEl, formatNumber(minutes));
         updateElement(secondsEl, formatNumber(seconds));
-
-        // 프로그레스 바 업데이트
-        updateProgress(now);
-
-        // 메시지 업데이트
-        updateMessage(days);
     }
 
     /**
@@ -71,45 +83,6 @@
     }
 
     /**
-     * 프로그레스 바 업데이트
-     */
-    function updateProgress(now) {
-        const elapsed = now - startDate;
-        const percentage = (elapsed / totalDuration) * 100;
-        const roundedPercentage = Math.min(100, Math.max(0, percentage)).toFixed(2);
-        
-        progressEl.style.width = `${roundedPercentage}%`;
-        progressTextEl.textContent = `${roundedPercentage}%`;
-    }
-
-    /**
-     * 남은 일수에 따른 메시지 업데이트
-     */
-    function updateMessage(days) {
-        let message = '';
-        
-        if (days > 30) {
-            message = '2026년을 기대하며...';
-        } else if (days > 14) {
-            message = '새해가 다가오고 있어요!';
-        } else if (days > 7) {
-            message = '2주도 채 남지 않았어요!';
-        } else if (days > 3) {
-            message = '한 주일도 안 남았습니다!';
-        } else if (days > 1) {
-            message = '며칠 남지 않았습니다!';
-        } else if (days === 1) {
-            message = '내일이 새해입니다!';
-        } else {
-            message = '오늘이 마지막 날입니다!';
-        }
-
-        if (messageEl.querySelector('p').textContent !== message) {
-            messageEl.querySelector('p').textContent = message;
-        }
-    }
-
-    /**
      * 새해 축하 메시지 표시
      */
     function showCelebration() {
@@ -119,10 +92,7 @@
         secondsEl.textContent = '00';
         
         messageEl.classList.add('celebrate');
-        messageEl.querySelector('p').textContent = '🎉 Happy New Year 2026! 🎉';
-        
-        progressEl.style.width = '100%';
-        progressTextEl.textContent = '100.00%';
+        messageEl.querySelector('p').textContent = '� 새해 복 많이 받으세요! 🎊';
 
         // 축하 애니메이션
         createConfetti();
@@ -180,6 +150,13 @@
      * 초기화 및 타이머 시작
      */
     function init() {
+        // 목표 연도를 제목에 표시
+        const targetYear = new Date(targetDate).getFullYear();
+        const subtitleEl = document.querySelector('.subtitle');
+        if (subtitleEl) {
+            subtitleEl.textContent = `${targetYear}년까지 남은 시간`;
+        }
+
         updateCountdown();
         setInterval(updateCountdown, 1000);
     }
@@ -189,9 +166,27 @@
      */
     function setupTestButton() {
         const testButton = document.getElementById('testButton');
+        const testJan1Button = document.getElementById('testJan1Button');
+        
         if (testButton) {
             testButton.addEventListener('click', function() {
                 showCelebration();
+            });
+        }
+
+        if (testJan1Button) {
+            testJan1Button.addEventListener('click', function() {
+                // 1월 1일 상태 시뮬레이션
+                // 원래 isNewYearDay 함수를 오버라이드하기 위해 강제로 축하 표시
+                daysEl.textContent = '00';
+                hoursEl.textContent = '00';
+                minutesEl.textContent = '00';
+                secondsEl.textContent = '00';
+                
+                messageEl.classList.add('celebrate');
+                messageEl.querySelector('p').textContent = '🎊 새해 복 많이 받으세요! 🎊';
+                
+                createConfetti();
             });
         }
     }
