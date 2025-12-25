@@ -41,7 +41,7 @@ docker-compose up -d
 docker build -t newyear-countdown .
 
 # 컨테이너 실행
-docker run -d -p 57126:80 --name countdown newyear-countdown
+docker run -d -p 57126:57126 --name countdown newyear-countdown
 
 # 브라우저에서 http://localhost:57126 접속
 ```
@@ -122,7 +122,7 @@ const targetDate = new Date('2026-01-01T00:00:00').getTime();
 
 ```yaml
 ports:
-  - "57126:80"
+  - "57126:57126"
 ```
 
 ### 색상 테마 변경

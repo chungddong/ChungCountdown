@@ -14,7 +14,7 @@ COPY script.js /usr/share/nginx/html/
 # COPY nginx.conf /etc/nginx/nginx.conf
 
 # 포트 노출
-EXPOSE 80
+EXPOSE 57126
 
 # Health check 추가
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
