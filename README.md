@@ -20,10 +20,10 @@
 ```bash
 # 파일 탐색기에서 index.html을 더블클릭하거나
 # 또는 로컬 서버 실행 (Python 예시)
-python -m http.server 8000
+python -m http.server 57126
 ```
 
-그 다음 브라우저에서 `http://localhost:8000` 접속
+그 다음 브라우저에서 `http://localhost:57126` 접속
 
 ### 방법 2: Docker Compose 사용 (권장)
 
@@ -31,7 +31,7 @@ python -m http.server 8000
 # 프로젝트 디렉토리에서 실행
 docker-compose up -d
 
-# 브라우저에서 http://localhost:8080 접속
+# 브라우저에서 http://localhost:57126 접속
 ```
 
 ### 방법 3: Docker만 사용
@@ -41,9 +41,9 @@ docker-compose up -d
 docker build -t newyear-countdown .
 
 # 컨테이너 실행
-docker run -d -p 8080:80 --name countdown newyear-countdown
+docker run -d -p 57126:80 --name countdown newyear-countdown
 
-# 브라우저에서 http://localhost:8080 접속
+# 브라우저에서 http://localhost:57126 접속
 ```
 
 ## 🛠️ 기술 스택
@@ -122,7 +122,7 @@ const targetDate = new Date('2026-01-01T00:00:00').getTime();
 
 ```yaml
 ports:
-  - "원하는포트:80"
+  - "57126:80"
 ```
 
 ### 색상 테마 변경
