@@ -278,6 +278,15 @@ footer p {
     backdrop-filter: blur(10px);
     transition: all 0.3s ease;
     z-index: 1000;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(20px);
+}
+
+.test-button.visible {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
 }
 
 .test-button.jan1-button {

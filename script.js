@@ -23,6 +23,10 @@
     // 목표 날짜 설정 (다음 해 1월 1일 00:00:00)
     let targetDate = getNextNewYear();
     
+    // 전역 타이머 참조
+    let mainInterval = null;
+    let testInterval = null;
+    
     // DOM 요소
     const daysEl = document.getElementById('days');
     const hoursEl = document.getElementById('hours');
@@ -92,7 +96,7 @@
         secondsEl.textContent = '00';
         
         messageEl.classList.add('celebrate');
-        messageEl.querySelector('p').textContent = '� 새해 복 많이 받으세요! 🎊';
+        messageEl.querySelector('p').textContent = '🎉 새해 복 많이 받으세요! 🎊';
 
         // 축하 애니메이션
         createConfetti();
@@ -158,7 +162,7 @@
         }
 
         updateCountdown();
-        setInterval(updateCountdown, 1000);
+        mainInterval = setInterval(updateCountdown, 1000);
     }
 
     /**
@@ -168,6 +172,40 @@
         const testButton = document.getElementById('testButton');
         const testJan1Button = document.getElementById('testJan1Button');
         
+        // 코나미 코드 감지: ↑ ↑ ↓ ↓ ← → ← → B A
+        const konamiCode = [
+            'ArrowUp', 'ArrowUp', 
+            'ArrowDown', 'ArrowDown', 
+            'ArrowLeft', 'ArrowRight', 
+            'ArrowLeft', 'ArrowRight', 
+            'b', 'a'
+        ];
+        let konamiIndex = 0;
+        
+        document.addEventListener('keydown', function(e) {
+            const key = e.key.toLowerCase();
+            
+            // 현재 키가 코나미 코드 순서와 맞는지 확인
+            if (key === konamiCode[konamiIndex].toLowerCase()) {
+                konamiIndex++;
+                
+                // 코나미 코드 완성!
+                if (konamiIndex === konamiCode.length) {
+                    konamiIndex = 0;
+                    
+                    // 테스트 버튼 표시
+                    if (testButton) testButton.classList.add('visible');
+                    if (testJan1Button) testJan1Button.classList.add('visible');
+                    
+                    // 성공 메시지 (선택사항)
+                    console.log('🎮 코나미 코드 활성화! 테스트 버튼이 나타났습니다.');
+                }
+            } else {
+                // 틀리면 초기화
+                konamiIndex = 0;
+            }
+        });
+        
         if (testButton) {
             testButton.addEventListener('click', function() {
                 showCelebration();
@@ -176,17 +214,33 @@
 
         if (testJan1Button) {
             testJan1Button.addEventListener('click', function() {
-                // 1월 1일 상태 시뮬레이션
-                // 원래 isNewYearDay 함수를 오버라이드하기 위해 강제로 축하 표시
+                // 기존 타이머 중지
+                if (mainInterval) clearInterval(mainInterval);
+                if (testInterval) clearInterval(testInterval);
+                
+                // 1월 1일 테스트: 10초 카운트다운 후 축하
+                let testSeconds = 10;
                 daysEl.textContent = '00';
                 hoursEl.textContent = '00';
                 minutesEl.textContent = '00';
-                secondsEl.textContent = '00';
+                secondsEl.textContent = formatNumber(testSeconds);
                 
-                messageEl.classList.add('celebrate');
-                messageEl.querySelector('p').textContent = '🎊 새해 복 많이 받으세요! 🎊';
+                messageEl.classList.remove('celebrate');
+                messageEl.querySelector('p').textContent = '테스트 모드: 10초 후 새해!';
                 
-                createConfetti();
+                testInterval = setInterval(() => {
+                    testSeconds--;
+                    secondsEl.textContent = formatNumber(testSeconds);
+                    
+                    if (testSeconds <= 0) {
+                        clearInterval(testInterval);
+                        showCelebration();
+                        // 메인 타이머 재시작
+                        setTimeout(() => {
+                            mainInterval = setInterval(updateCountdown, 1000);
+                        }, 5000);
+                    }
+                }, 1000);
             });
         }
     }

@@ -8,7 +8,7 @@ services:
       dockerfile: Dockerfile
     container_name: newyear-countdown
     ports:
-      - "57126:57126"
+      - "3689:3689"
     restart: unless-stopped
     networks:
       - countdown-network
@@ -18,7 +18,7 @@ services:
       - "com.newyear.description=New Year Countdown Web Application"
       - "com.newyear.version=1.0"
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/"]
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3689/health"]
       interval: 30s
       timeout: 10s
       retries: 3
